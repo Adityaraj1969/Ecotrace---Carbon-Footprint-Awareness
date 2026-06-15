@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EcoTrace — Know Your Carbon</title>
+    <meta name="description" content="Track, understand, and reduce your carbon footprint with personalized AI insights." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- GitHub Pages: restore route after 404.html redirect -->
+    <script>
+      (function () {
+        var redirect = sessionStorage.getItem('ghpages_redirect');
+        if (redirect) {
+          sessionStorage.removeItem('ghpages_redirect');
+          // Strip the repo base path (e.g. /ecotrace) so React Router gets the right path
+          var base = window.location.pathname.split('/')[1];
+          var path = redirect.replace('/' + base, '') || '/';
+          window.history.replaceState(null, null, path || '/');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
