@@ -4,7 +4,7 @@ const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
 // ─── Personalized Insights (returns JSON) ────────────────────────────────────
 export async function getInsights(userData) {
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
   const { categoryCO2, totalCO2, profile } = userData;
 
   const topCat = categoryCO2
@@ -53,7 +53,7 @@ Give specific, practical, India-relevant advice with real numbers.
 Keep responses under 140 words. Use bullet points for lists.`;
 
 export async function streamChat(history, userMessage, onChunk) {
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
   const chat = model.startChat({
     history: [

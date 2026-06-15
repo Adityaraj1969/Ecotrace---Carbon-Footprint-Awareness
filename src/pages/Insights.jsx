@@ -48,7 +48,7 @@ export default function Insights() {
   // Load data + insights
   useEffect(() => {
     (async () => {
-      setLoading(true); setAiError(false);
+      setLoading(true); setAiError(null);
       const data = await getUserData(currentUser.uid);
       setUserData(data);
       if (!data?.totalCO2) { setLoading(false); return; }
@@ -57,7 +57,7 @@ export default function Insights() {
         setInsights(result);
       } catch (e) {
         console.error(e);
-        setAiError(true);
+        setAiError(e.message || "Unknown error occurred.");
       }
       setLoading(false);
     })();
@@ -141,8 +141,8 @@ export default function Insights() {
       {/* Error */}
       {aiError && (
         <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-center mb-6">
-          <p className="text-red-600 font-medium mb-2">Couldn't reach Gemini</p>
-          <p className="text-red-400 text-sm mb-4">Check your API key in the .env file</p>
+          <p className="text-red-600 font-medium mb-2">Gemini Error:</p>
+          <p className="text-red-400 text-sm mb-4">{typeof aiError === 'string' ? aiError : "Check your API key in the .env file"}</p>
           <button onClick={regenerate} className="bg-red-500 text-white px-5 py-2 rounded-xl text-sm font-semibold hover:bg-red-400 transition-all">
             Retry
           </button>
