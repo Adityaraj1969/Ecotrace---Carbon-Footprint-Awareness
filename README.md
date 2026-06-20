@@ -7,7 +7,7 @@ EcoTrace helps individuals understand, track, and reduce their personal carbon f
 ---
 
 ## 🚀 Live Demo
-> Add your Firebase Hosting URL here after deployment
+> 🌐 **Live Site:** https://adityaraj1969.github.io/Ecotrace---Carbon-Footprint-Awareness/
 
 ---
 
@@ -32,7 +32,7 @@ EcoTrace helps individuals understand, track, and reduce their personal carbon f
 
 - **Frontend**: React 19 + Vite
 - **Styling**: Tailwind CSS v3
-- **AI**: Gemini 2.0 Flash (`@google/generative-ai`)
+- **AI**: Gemini 2.5 Flash (`@google/generative-ai`)
 - **Backend**: Firebase Firestore + Firebase Auth
 - **Charts**: Recharts
 - **Icons**: Lucide React
@@ -100,30 +100,13 @@ Open http://localhost:5173 in your browser.
 
 ---
 
-### Step 6 — Deploy to Firebase Hosting (live URL for judges)
-```bash
-# Install Firebase CLI (one-time)
-npm install -g firebase-tools
+### Step 6 — View the Live Site
 
-# Login
-firebase login
+The project is deployed on GitHub Pages and updates automatically on every push to `main` via the `gh-pages.yml` GitHub Actions workflow.
 
-# Initialize hosting in your project folder
-firebase init hosting
-# When asked:
-#   - Use existing project → select your Firebase project
-#   - Public directory → dist
-#   - Single-page app → Yes
-#   - Overwrite index.html → No
+🌐 **Live Site:** https://adityaraj1969.github.io/Ecotrace---Carbon-Footprint-Awareness/
 
-# Build the production bundle
-npm run build
-
-# Deploy
-firebase deploy --only hosting
-```
-Your app will be live at: `https://your-project.web.app`
-
+No manual deployment needed. Just push to `main` and GitHub Actions handles the rest.
 ---
 
 ## 📁 Project Structure
