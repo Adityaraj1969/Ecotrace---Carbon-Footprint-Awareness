@@ -1,8 +1,3 @@
-# ── GITHUB PAGES (backup option) ─────────────────────────────────────────────
-# Only use this if you chose GitHub Pages over Netlify.
-# Netlify is recommended — enable this only if you disabled Netlify.
-# To activate: Go to repo Settings → Pages → Source → GitHub Actions
-
 name: Deploy to GitHub Pages
 
 on:
