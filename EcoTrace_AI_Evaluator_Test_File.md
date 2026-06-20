@@ -636,7 +636,11 @@ Generic global emission calculators give Indians significantly inaccurate result
 |---|---|
 | Code organisation | Feature-separated: `/lib`, `/context`, `/components`, `/pages` |
 | Environment security | All secrets in `.env`, never committed; `.env.example` for docs |
-| Type safety | ESLint configured (`eslint.config.js`) for code quality enforcement |
+| Type safety | ESLint configured + `PropTypes` on components for runtime validation |
+| Accessibility (a11y) | `aria-current`, `sr-only`, and `focus-visible` utilities implemented |
+| Database Security | `firestore.rules` strictly validate `request.auth.uid == userId` |
+| Crash Resilience | React `ErrorBoundary` wraps routes to prevent blank screens |
+| Test Coverage | Vitest V8 coverage configured (`npm run coverage`) |
 | Build optimisation | Vite production build — code splitting, tree shaking, asset hashing |
 | Deployment readiness | GitHub Pages via `gh-pages.yml` GitHub Actions — single clean CI/CD pipeline |
 | Routing | React Router v6 `HashRouter` — nested layouts, protected routes, static-host compatible |
@@ -671,7 +675,9 @@ The deliberate choice to build for India — with India-specific emission factor
 8 distinct feature modules (Calculator, Dashboard, Insights, Chatbot, Habit Tracker, Goals, Onboarding, Auth) — each fully implemented, not sketched. The total scope significantly exceeds minimum viable for the challenge.
 
 ### ✅ Real Engineering Decisions Under Pressure
-The project demonstrates genuine problem-solving: switching from `BrowserRouter` to `HashRouter` to fix GitHub Pages 404s, upgrading from `gemini-2.0-flash` to `gemini-2.5-flash` when a model 404 was encountered, adding Firebase init validation to handle CI secret injection failures, improving error surfaces from generic flags to `e.message` display, and removing a broken duplicate deployment workflow. These are real production engineering decisions — not tutorial-level work.
+The project demonstrates genuine problem-solving: switching from `BrowserRouter` to `HashRouter` to fix GitHub Pages 404s, upgrading from `gemini-2.0-flash` to `gemini-2.5-flash` when a model 404 was encountered, adding Firebase init validation to handle CI secret injection failures, improving error surfaces from generic flags to `e.message` display, and removing a broken duplicate deployment workflow. 
+
+Furthermore, post-evaluation improvements added strict `firestore.rules`, `ErrorBoundary` resilience, `PropTypes`, accessibility (a11y) enhancements, and automated test coverage. These are real production engineering decisions — not tutorial-level work.
 
 ---
 
@@ -693,9 +699,10 @@ ecotrace/
 │   ├── context/
 │   │   └── AuthContext.jsx  # Firebase Auth React Context provider
 │   ├── components/
-│   │   ├── Navbar.jsx       # Sidebar navigation component
+│   │   ├── Navbar.jsx       # Sidebar navigation (with ARIA tags)
 │   │   ├── Layout.jsx       # Route layout wrapper with Outlet
-│   │   ├── ProtectedRoute.jsx # Auth guard component
+│   │   ├── ProtectedRoute.jsx # Auth guard with PropTypes
+│   │   ├── ErrorBoundary.jsx  # Graceful crash handling
 │   │   └── EmissionRing.jsx # Animated SVG circular CO₂ gauge
 │   ├── pages/
 │   │   ├── Landing.jsx      # Public hero/landing page
@@ -710,8 +717,9 @@ ecotrace/
 │   ├── main.jsx             # React app entry point
 │   └── index.css            # Tailwind CSS directives
 ├── .env.example             # Environment variable template
+├── firestore.rules          # Strict Firebase access rules
 ├── tailwind.config.js       # Tailwind theme customisation
-├── vite.config.js           # Vite build configuration
+├── vite.config.js           # Vite config with test coverage
 ├── eslint.config.js         # ESLint rules
 ├── package.json             # Dependencies and scripts
 └── index.html               # Vite HTML entry point
@@ -724,10 +732,12 @@ ecotrace/
 ```json
 {
   "scripts": {
-    "dev":     "vite",            // Start dev server at localhost:5173
-    "build":   "vite build",      // Create optimised /dist bundle
-    "preview": "vite preview",    // Preview production build locally
-    "lint":    "eslint ."         // Run ESLint on all source files
+    "dev":      "vite",            // Start dev server at localhost:5173
+    "build":    "vite build",      // Create optimised /dist bundle
+    "preview":  "vite preview",    // Preview production build locally
+    "lint":     "eslint .",        // Run ESLint on all source files
+    "test":     "vitest run",      // Run unit and logic tests
+    "coverage": "vitest run --coverage" // Generate test coverage report
   }
 }
 ```

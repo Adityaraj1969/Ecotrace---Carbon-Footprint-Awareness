@@ -22,6 +22,9 @@ EcoTrace helps individuals understand, track, and reduce their personal carbon f
 | **Daily Habit Tracker** | 12 eco-habits with streak counter and achievement badges |
 | **Goal Setting** | Set a CO₂ reduction target and track progress |
 | **Firebase Auth** | Google Sign-in + Email/Password authentication |
+| **Robust Security** | Strict `firestore.rules` to prevent unauthorized data access |
+| **Accessibility (a11y)** | ARIA-labels, screen-reader support, and keyboard focus states |
+| **Code Quality** | React Error Boundaries and PropTypes for runtime safety |
 
 ---
 
@@ -34,6 +37,7 @@ EcoTrace helps individuals understand, track, and reduce their personal carbon f
 - **Charts**: Recharts
 - **Icons**: Lucide React
 - **Routing**: React Router v6
+- **Testing**: Vitest with `@vitest/coverage-v8`
 - **Deployment**: Firebase Hosting
 
 ---
@@ -135,9 +139,10 @@ ecotrace/
 │   ├── context/
 │   │   └── AuthContext.jsx  # Firebase Auth provider
 │   ├── components/
-│   │   ├── Navbar.jsx       # Sidebar navigation
+│   │   ├── Navbar.jsx       # Sidebar navigation (with ARIA tags)
 │   │   ├── Layout.jsx       # Page wrapper with Outlet
-│   │   ├── ProtectedRoute.jsx
+│   │   ├── ProtectedRoute.jsx # Auth guard with PropTypes
+│   │   ├── ErrorBoundary.jsx  # React fallback UI for crashes
 │   │   └── EmissionRing.jsx # Animated SVG circular gauge
 │   ├── pages/
 │   │   ├── Landing.jsx      # Public hero page
@@ -152,8 +157,9 @@ ecotrace/
 │   ├── main.jsx             # Entry point
 │   └── index.css            # Tailwind directives
 ├── .env.example
+├── firestore.rules          # Firebase security rules
 ├── tailwind.config.js
-├── vite.config.js
+├── vite.config.js           # Vite config with Vitest coverage
 └── package.json
 ```
 
