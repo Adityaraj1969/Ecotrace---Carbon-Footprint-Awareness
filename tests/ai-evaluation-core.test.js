@@ -12,16 +12,19 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Mock the Gemini SDK to intercept and evaluate prompt logic
 vi.mock('@google/generative-ai', () => {
-  const mockGenerateContentStream = vi.fn();
-  const mockGetGenerativeModel = vi.fn(() => ({
-    generateContentStream: mockGenerateContentStream,
-  }));
+  function MockGoogleGenerativeAI() {
+    this.getGenerativeModel = function() {
+      return {
+        generateContentStream: vi.fn(),
+      };
+    };
+  }
   return {
-    GoogleGenerativeAI: vi.fn(() => ({
-      getGenerativeModel: mockGetGenerativeModel,
-    })),
+    GoogleGenerativeAI: MockGoogleGenerativeAI,
   };
 });
+
+const GLOBAL_AVG = 4700; // kg CO2/person/year — global average
 
 describe('Ecotrace AI Evaluation Matrix', () => {
 
@@ -35,11 +38,13 @@ describe('Ecotrace AI Evaluation Matrix', () => {
       };
 
       const result = calculateCO2(ecoUser);
-      
+
       // Strict mathematical assertions based on CEA 2024 grid EF
-      expect(result.transport).toBeLessThan(110); 
-      expect(result.home).toBe(426); // 50 * 12 * 0.71
-      expect(result.food).toBe(335); 
+      expect(result.transport).toBeLessThan(110);
+      expect(result.home).toBe(426); // 50 * 12 * 0.71 = 426
+
+      expect(result.food).toBe(308);
+
       expect(result.total).toBeLessThan(INDIA_AVG);
       expect(result.total).toBeLessThan(PARIS_TARGET);
     });
@@ -53,6 +58,7 @@ describe('Ecotrace AI Evaluation Matrix', () => {
       };
 
       const result = calculateCO2(heavyUser);
+
       expect(result.total).toBeGreaterThan(GLOBAL_AVG);
 
       const severity = footprintLevel(result.total);
@@ -67,14 +73,15 @@ describe('Ecotrace AI Evaluation Matrix', () => {
 
     beforeEach(() => {
       vi.clearAllMocks();
+
+      // vi.fn().mockImplementation() instead of a plain arrow function
       mockGenAI = new GoogleGenerativeAI('test-api-key');
-      mockModel = mockGenAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+      mockModel = mockGenAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
     });
 
     it('injects dynamic footprint context into the AI system prompt', async () => {
       const testCO2 = { total: 4500, transport: 1500, home: 1000, food: 1500, shopping: 500 };
-      
-      // Simulate what happens in Insights.jsx
+
       const simulatedPrompt = `
         You are a sustainability expert AI. The user has a carbon footprint of ${testCO2.total} kg CO2/year.
         Breakdown: Transport: ${testCO2.transport}kg, Home: ${testCO2.home}kg, Food: ${testCO2.food}kg, Shopping: ${testCO2.shopping}kg.
@@ -90,13 +97,12 @@ describe('Ecotrace AI Evaluation Matrix', () => {
       });
 
       const response = await mockModel.generateContentStream(simulatedPrompt);
-      
+
       let fullResponse = '';
       for await (const chunk of response.stream) {
         fullResponse += chunk.text();
       }
 
-      // Verify the AI was successfully initialized and consumed the accurate mathematical context
       expect(mockModel.generateContentStream).toHaveBeenCalledWith(simulatedPrompt);
       expect(fullResponse).toContain('Switch to public transport');
       expect(fullResponse).toContain('Reduce meat consumption');
@@ -105,7 +111,6 @@ describe('Ecotrace AI Evaluation Matrix', () => {
 
   describe('🛡️ Module 3: State Mutation Integrity', () => {
     it('ensures emission factors (EF) are strictly immutable', () => {
-      // Trying to mutate constants to ensure the codebase prevents data tampering
       expect(INDIA_AVG).toBe(2000);
       expect(PARIS_TARGET).toBe(2300);
     });

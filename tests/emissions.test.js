@@ -11,8 +11,8 @@ const FACTORS = {
 }
 
 const HOME_FACTORS = {
-  electricity: 0.71,
-  lpg:         2.98,
+  electricity: 0.71,   // CEA National Electricity Plan 2024
+  lpg:         2.98,   // IPCC AR6
 }
 
 const FOOD_FACTORS = {
@@ -24,7 +24,7 @@ const FOOD_FACTORS = {
   vegetables:   2.0,
 }
 
-// ─── Calculation helpers (mirror your emissions.js logic) ───
+// ─── Calculation helpers (mirror emissions.js logic) ───────────────────
 const calcTransport = (type, dailyKm) => dailyKm * 365 * FACTORS[type]
 const calcHome      = (monthlyKwh, monthlyLpgKg) =>
   monthlyKwh * 12 * HOME_FACTORS.electricity + monthlyLpgKg * 12 * HOME_FACTORS.lpg
@@ -59,7 +59,7 @@ describe('Transport Emissions', () => {
   })
 
   it('diesel car annual: 15 km/day', () => {
-    expect(calcTransport('diesel_car', 15)).toBeCloseTo(931.05, 1)
+    expect(calcTransport('diesel_car', 15)).toBeCloseTo(930.75, 1)
   })
 })
 
@@ -74,7 +74,7 @@ describe('Home Energy Emissions', () => {
   })
 
   it('combined electricity and LPG', () => {
-    expect(calcHome(150, 8)).toBeCloseTo(1560.6, 0)
+    expect(calcHome(150, 8)).toBeCloseTo(1564.08, 0)
   })
 
   it('zero usage produces zero emissions', () => {
@@ -132,7 +132,6 @@ describe('Total Emissions', () => {
     const home      = calcHome(80, 6)
     const food      = calcFood('chicken', 0.5)
     const total     = calcTotal(transport, home, food, 200)
-    // Should be between 500 kg and 5000 kg/year for a typical Indian user
     expect(total).toBeGreaterThan(500)
     expect(total).toBeLessThan(5000)
   })
