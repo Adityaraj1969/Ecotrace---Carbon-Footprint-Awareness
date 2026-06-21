@@ -6,31 +6,35 @@ export default defineConfig({
   plugins: [react()],
   base: process.env.VITE_BASE_PATH || '/',
 
-  // EFFICIENCY: Manual chunk splitting.
-  // Without this, Vite bundles React + Firebase + Recharts + Gemini into a
-  // single large JS file. With it, each vendor group becomes a separate cached
-  // chunk — the browser only re-downloads a chunk when that library updates,
-  // not on every app deploy. Result: dramatically faster repeat visits.
+  // EFFICIENCY: Manual chunk splitting using function form.
+  // Vite 8 uses rolldown which requires manualChunks as a function, not an object.
+  // Each vendor group becomes a separate cached chunk — the browser only
+  // re-downloads a chunk when that library updates, not on every app deploy.
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          // Core React runtime — changes almost never
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          // Firebase — large library, infrequent updates
-          'vendor-firebase': [
-            'firebase/app',
-            'firebase/auth',
-            'firebase/firestore',
-          ],
-          // Recharts — only needed on Dashboard
-          'vendor-charts': ['recharts'],
-          // Gemini SDK — only needed on Insights
-          'vendor-ai': ['@google/generative-ai'],
+        manualChunks(id) {
+          if (id.includes('node_modules/react') ||
+              id.includes('node_modules/react-dom') ||
+              id.includes('node_modules/react-router-dom') ||
+              id.includes('node_modules/scheduler')) {
+            return 'vendor-react';
+          }
+          if (id.includes('node_modules/firebase')) {
+            return 'vendor-firebase';
+          }
+          if (id.includes('node_modules/recharts') ||
+              id.includes('node_modules/d3-') ||
+              id.includes('node_modules/victory-') ||
+              id.includes('node_modules/victory')) {
+            return 'vendor-charts';
+          }
+          if (id.includes('node_modules/@google/generative-ai')) {
+            return 'vendor-ai';
+          }
         },
       },
     },
-    // Warn when any individual chunk exceeds 500kb
     chunkSizeWarningLimit: 500,
   },
 
